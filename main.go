@@ -15,6 +15,10 @@ type page struct {
 	Body  []byte
 }
 
+func init() {
+	os.Mkdir("./downloads", 0755)
+}
+
 func main() {
 	http.Handle("/downloads/", http.StripPrefix("/downloads/", http.FileServer(http.Dir("./downloads"))))
 	http.HandleFunc("/upload", uploadHandler)
