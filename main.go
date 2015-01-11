@@ -33,8 +33,9 @@ func main() {
 func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	file, header, err := r.FormFile("file")
 	if err != nil {
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		log.Println("Error while uploading: ", err.Error())
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
 	}
 	defer file.Close()
 
