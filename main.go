@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	pageURL = "do.krzbff.de"
+	pageURL = "localhost"
 )
 
 type page struct {
@@ -23,6 +23,7 @@ func init() {
 }
 
 func main() {
+	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("./assets"))))
 	http.Handle("/downloads/", http.StripPrefix("/downloads/", http.FileServer(http.Dir("./downloads"))))
 	http.HandleFunc("/upload", uploadHandler)
 	http.HandleFunc("/", doRest)
@@ -54,6 +55,6 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 }
 func doRest(w http.ResponseWriter, r *http.Request) {
 	p := &page{Title: "File UPload", Path: pageURL}
-	t, _ := template.ParseFiles("index.html")
+	t, _ := template.ParseFiles("assets/index.html")
 	t.Execute(w, p)
 }
