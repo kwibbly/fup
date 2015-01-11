@@ -32,18 +32,21 @@ func main() {
 func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	file, header, err := r.FormFile("file")
 	if err != nil {
-		log.Println("Error while uploading: ", err)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		log.Println("Error while uploading: ", err.Error())
 	}
 	defer file.Close()
 
 	out, err := os.Create("./downloads/" + header.Filename)
 	defer out.Close()
 	if err != nil {
-		log.Println("Error while creating file: ", err)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		log.Println("Error while creating file: ", err.Error())
 	}
 	_, err = io.Copy(out, file)
 	if err != nil {
-		log.Println("Error while writing to file: ", err)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		log.Println("Error while writing to file: ", err.Error())
 	}
 
 	http.Redirect(w, r, "/downloads", http.StatusFound)
