@@ -1,8 +1,6 @@
 package main
 
 import (
-	//"fmt"
-	//"io/ioutil"
 	"html/template"
 	"io"
 	"log"
@@ -12,6 +10,7 @@ import (
 
 type page struct {
 	Title string
+	Path  string
 	Body  []byte
 }
 
@@ -29,25 +28,25 @@ func main() {
 func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	file, header, err := r.FormFile("file")
 	if err != nil {
-		log.Println("Kabutt: ", err)
+		log.Println("Error while uploading: ", err)
 	}
 	defer file.Close()
 
 	out, err := os.Create("./downloads/" + header.Filename)
 	defer out.Close()
 	if err != nil {
-		log.Println("Kabutt: ", err)
+		log.Println("Error while creating file: ", err)
 	}
 	_, err = io.Copy(out, file)
 	if err != nil {
-		log.Println("Kabutt: ", err)
+		log.Println("Error while writing to file: ", err)
 	}
 
 	http.Redirect(w, r, "/downloads", http.StatusFound)
 
 }
 func doRest(w http.ResponseWriter, r *http.Request) {
-	p := &page{Title: "File UPload"}
+	p := &page{Title: "File UPload", Path: "do.krzbff.de"}
 	t, _ := template.ParseFiles("index.html")
 	t.Execute(w, p)
 }
