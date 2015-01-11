@@ -8,6 +8,10 @@ import (
 	"os"
 )
 
+const (
+	pageURL = "do.krzbff.de"
+)
+
 type page struct {
 	Title string
 	Path  string
@@ -46,7 +50,7 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 func doRest(w http.ResponseWriter, r *http.Request) {
-	p := &page{Title: "File UPload", Path: "do.krzbff.de"}
+	p := &page{Title: "File UPload", Path: pageURL}
 	t, _ := template.ParseFiles("index.html")
 	t.Execute(w, p)
 }
