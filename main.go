@@ -37,6 +37,13 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
+
+	if header.Filename == "index.html" {
+		log.Println("somebody tried to upload an index.html, dropping request")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
+
 	defer file.Close()
 
 	out, err := os.Create("./downloads/" + header.Filename)
