@@ -1,7 +1,5 @@
 ===== File UPload =====
 
-Create a directory 'downloads'.
-
 Compile it.
 
 Run it.

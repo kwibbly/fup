@@ -1,2 +1,4 @@
 fup
 downloads/*
+.gitignore
+.gitconfig
