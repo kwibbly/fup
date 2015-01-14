@@ -8,9 +8,10 @@
 	<!--<link rel="stylesheet" href="assets/local.css">-->
 </head>
 <body>
+	<a style="color:red;" href="/">Back to upload form</a><br />
 	<div>
 		{{ range .Downloads }}
-			<a href="/_downloads/{{ .Filename }}">{{ .Filename }}</a><br />
+			<ul><a href="/_downloads/{{ .Filename }}">{{ .Filename }}</a></ul>
 		{{ end }}
 	</div>
 </body>
