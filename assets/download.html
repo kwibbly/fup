@@ -10,7 +10,7 @@
 <body>
 	<div>
 		{{ range .Downloads }}
-			<a href="//{{ .PageURL }}:8080/downloads/{{ .Filename }}">{{ .Filename }}</a><br />
+			<a href="/_downloads/{{ .Filename }}">{{ .Filename }}</a><br />
 		{{ end }}
 	</div>
 </body>
