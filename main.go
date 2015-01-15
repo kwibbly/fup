@@ -1,3 +1,12 @@
+// Package fup provides a simple mechanism to share files.
+//
+// Have you ever been to a lan-party where you needed to
+// share some files with your buddies?
+// Theres probably always windows filesharing, however that
+// does not always work, maybe there is someone with OS X
+// or FreeBSD.
+// fup saves the day, it provides a fast way to share files
+// via HTTP.
 package main
 
 import (
@@ -11,19 +20,19 @@ import (
 	"time"
 )
 
-type page struct {
+type indexPage struct {
 	Title string
 	Body  []byte
 }
 
-type Download struct {
+type download struct {
 	Id         int       `db:"id"`
 	Filename   string    `db:"filename"`
 	UploadDate time.Time `db:"uploadDate"`
 }
 
-type DownloadPage struct {
-	Downloads []Download
+type downloadPage struct {
+	Downloads []download
 	Title     string
 }
 
@@ -47,6 +56,7 @@ func main() {
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
+// initializes the DB if it does not already exist
 func initDB() {
 	if _, err := os.Stat("./fup.db"); err != nil {
 		db, _ := sqlx.Open("sqlite3", "./fup.db")
@@ -59,6 +69,8 @@ func initDB() {
 	}
 }
 
+// handles uploads, copies the file to the filessystem and afterwards
+// writes the filename and the upload timestamp to a DB.
 func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	db, err := sqlx.Open("sqlite3", "./fup.db")
 	if err != nil {
@@ -102,6 +114,11 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// downloadHandler blabla for godoc
+// The 'customer' wanted a way to stylize the downloads-view,
+// Golangs http.FileServer doesn't provide that feature.
+// So that's what this function does, it renders a page with a
+// list of the uploaded files from the DB.
 func downloadHandler(w http.ResponseWriter, r *http.Request) {
 	db, err := sqlx.Open("sqlite3", "./fup.db")
 	if err != nil {
@@ -109,19 +126,20 @@ func downloadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	files := []Download{}
+	files := []download{}
 	err = db.Select(&files, "SELECT id,filename,uploadDate FROM uploads;")
 	if err != nil {
 		log.Println("Something wrong with the db: ", err)
 	}
 
-	dp := &DownloadPage{Title: "File Downloads", Downloads: files}
+	dp := &downloadPage{Title: "File Downloads", Downloads: files}
 	t, _ := template.ParseFiles("assets/download.html")
 	t.Execute(w, dp)
 }
 
+// simple function to render the index.html page
 func doRest(w http.ResponseWriter, r *http.Request) {
-	p := &page{Title: "File UPload"}
+	p := &indexPage{Title: "File UPload"}
 	t, _ := template.ParseFiles("assets/index.html")
 	t.Execute(w, p)
 }

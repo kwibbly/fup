@@ -4,11 +4,12 @@
 	<meta charset="utf-8">
 	<meta name="description" content="simple file uploader for lan parties">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>File UPload</title>
-	<!--<link rel="stylesheet" href="assets/local.css">-->
+	<title>{{ .Title }}</title>
+	<link rel="stylesheet" href="assets/local.css">
 </head>
 <body>
-	<div>
+	<span><a href="/downloads">Downloads</a></span>
+	<div id="uploadForm">
 	<form action="upload" method="post" enctype="multipart/form-data">
 		<input type="file" name="file" id="file" />
 		<input type="submit" name="submit" value="Submit" />

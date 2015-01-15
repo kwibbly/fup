@@ -5,11 +5,11 @@
 	<meta name="description" content="simple file uploader for lan parties">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>{{ .Title }}</title>
-	<!--<link rel="stylesheet" href="assets/local.css">-->
+	<link rel="stylesheet" href="assets/local.css">
 </head>
 <body>
-	<a style="color:red;" href="/">Back to upload form</a><br />
-	<div>
+	<a href="/">Back to upload form</a><br />
+	<div id="downloads">
 		{{ range .Downloads }}
 			<ul><a href="/_downloads/{{ .Filename }}">{{ .Filename }}</a></ul>
 		{{ end }}
