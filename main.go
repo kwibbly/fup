@@ -17,6 +17,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"time"
 )
 
@@ -48,6 +49,9 @@ func main() {
 	}
 	defer db.Close()
 
+	// scan downloads directory on startup and commit files found to the DB.
+	filepath.Walk("./downloads", visitFile)
+
 	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("./assets"))))
 	http.Handle("/_downloads/", http.StripPrefix("/_downloads/", http.FileServer(http.Dir("./downloads"))))
 	http.HandleFunc("/upload", uploadHandler)
@@ -67,6 +71,27 @@ func initDB() {
 		db.Close()
 		log.Println("Successfully created new DB")
 	}
+}
+
+// commitFile does stuff
+func visitFile(path string, f os.FileInfo, err error) error {
+	db, err := sqlx.Open("sqlite3", "./fup.db")
+	if err != nil {
+		log.Fatal("Something wrong with my db: ", err)
+	}
+	defer db.Close()
+	tx, _ := db.Begin()
+	defer tx.Commit()
+
+	cTime := time.Now()
+	sql := `
+	INSERT INTO uploads (filename, uploadDate) VALUES (?,?);
+	`
+	if !f.IsDir() {
+		db.Exec(sql, f.Name(), cTime)
+	}
+
+	return nil
 }
 
 // handles uploads, copies the file to the filessystem and afterwards
