@@ -56,6 +56,7 @@ func main() {
 	http.Handle("/_downloads/", http.StripPrefix("/_downloads/", http.FileServer(http.Dir("./downloads"))))
 	http.HandleFunc("/upload", uploadHandler)
 	http.HandleFunc("/downloads/", downloadHandler)
+	http.HandleFunc("/rescan", rescanHandler)
 	http.HandleFunc("/", doRest)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
@@ -92,6 +93,12 @@ func visitFile(path string, f os.FileInfo, err error) error {
 	}
 
 	return nil
+}
+
+// rescanHandler allows for online rescanning of the downloads directory
+func rescanHandler(w http.ResponseWriter, r *http.Request) {
+	filepath.Walk("./downloads", visitFile)
+	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 }
 
 // handles uploads, copies the file to the filessystem and afterwards
