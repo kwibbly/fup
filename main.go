@@ -16,6 +16,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	"time"
@@ -37,17 +38,17 @@ type downloadPage struct {
 	Title     string
 }
 
+type deletePage struct {
+	File  string
+	Title string
+}
+
 func init() {
 	os.Mkdir("./downloads", 0755)
 	initDB()
 }
 
 func main() {
-	db, err := sqlx.Open("sqlite3", "./fup.db")
-	if err != nil {
-		log.Fatal("Something wrong with my db: ", err)
-	}
-	defer db.Close()
 
 	// scan downloads directory on startup and commit files found to the DB.
 	filepath.Walk("./downloads", visitFile)
@@ -57,6 +58,8 @@ func main() {
 	http.HandleFunc("/upload", uploadHandler)
 	http.HandleFunc("/downloads/", downloadHandler)
 	http.HandleFunc("/rescan", rescanHandler)
+	http.HandleFunc("/deletefile", deleteFileHandler)
+	http.HandleFunc("/delete/", deleteHandler)
 	http.HandleFunc("/", doRest)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
@@ -66,7 +69,7 @@ func initDB() {
 	if _, err := os.Stat("./fup.db"); err != nil {
 		db, _ := sqlx.Open("sqlite3", "./fup.db")
 		sql := `
-		CREATE TABLE uploads (id integer not null primary key, filename text UNIQUE, uploadDate timestamp);
+		CREATE TABLE uploads (id integer not null primary key, filename text UNIQUE, passwd text, uploadDate timestamp);
 		`
 		db.Exec(sql)
 		db.Close()
@@ -84,26 +87,38 @@ func visitFile(path string, f os.FileInfo, err error) error {
 	tx, _ := db.Begin()
 	defer tx.Commit()
 
+	dummyPasswd := "23geheim42"
+
 	cTime := time.Now()
 	sql := `
-	INSERT INTO uploads (filename, uploadDate) VALUES (?,?);
+	INSERT INTO uploads (filename, uploadDate, passwd) VALUES (?,?,?);
 	`
 	if !f.IsDir() {
-		db.Exec(sql, f.Name(), cTime)
+		db.Exec(sql, f.Name(), cTime, dummyPasswd)
 	}
-
 	return nil
 }
 
 // rescanHandler allows for online rescanning of the downloads directory
 func rescanHandler(w http.ResponseWriter, r *http.Request) {
+	db, err := sqlx.Open("sqlite3", "./fup.db")
+	if err != nil {
+		log.Fatal("Something wrong with my db: ", err)
+	}
+	sql := `
+	DELETE FROM uploads;
+	`
+	db.Exec(sql)
+	db.Close()
+
 	filepath.Walk("./downloads", visitFile)
-	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+	http.Redirect(w, r, "/downloads", http.StatusTemporaryRedirect)
 }
 
 // handles uploads, copies the file to the filessystem and afterwards
-// writes the filename and the upload timestamp to a DB.
+// writes the filename and the upload timesamp to a DB.
 func uploadHandler(w http.ResponseWriter, r *http.Request) {
+	r.ParseMultipartForm(4294967296)
 	db, err := sqlx.Open("sqlite3", "./fup.db")
 	if err != nil {
 		log.Fatal("Something wrong with my db: ", err)
@@ -112,6 +127,7 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	tx, _ := db.Begin()
 	defer tx.Commit()
 
+	passwd := r.FormValue("passwd")
 	file, header, err := r.FormFile("file")
 	if err != nil {
 		log.Println("Error while uploading: ", err.Error())
@@ -138,9 +154,9 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	cTime := time.Now()
 	sql := `
-	INSERT INTO uploads (filename, uploadDate) VALUES (?,?);
+	INSERT INTO uploads (filename, passwd, uploadDate) VALUES (?,?,?);
 	`
-	db.Exec(sql, header.Filename, cTime)
+	db.Exec(sql, header.Filename, passwd, cTime)
 
 	http.Redirect(w, r, "/downloads", http.StatusFound)
 
@@ -167,6 +183,40 @@ func downloadHandler(w http.ResponseWriter, r *http.Request) {
 	dp := &downloadPage{Title: "File Downloads", Downloads: files}
 	t, _ := template.ParseFiles("assets/download.html")
 	t.Execute(w, dp)
+}
+
+func deleteHandler(w http.ResponseWriter, r *http.Request) {
+	filename := r.RequestURI[len("/delete/"):]
+	filename2, _ := url.QueryUnescape(filename)
+
+	p := &deletePage{Title: "File Delete", File: filename2}
+	t, _ := template.ParseFiles("assets/delete.html")
+	t.Execute(w, p)
+}
+
+func deleteFileHandler(w http.ResponseWriter, r *http.Request) {
+	db, err := sqlx.Open("sqlite3", "./fup.db")
+	if err != nil {
+		log.Fatal("Something wrong with my db: ", err)
+	}
+	defer db.Close()
+
+	var dbpasswd string
+	passwd := r.PostFormValue("passwd")
+	filename := r.PostFormValue("file")
+	db.Get(&dbpasswd, "SELECT passwd FROM uploads where filename=?", filename)
+
+	sql := `
+	DELETE FROM uploads WHERE filename=? and passwd=?;
+	`
+	db.Exec(sql, filename, passwd)
+	if passwd == dbpasswd {
+		log.Println("Removing this file:", filename)
+		os.Remove("./downloads/" + filename)
+	}
+
+	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+
 }
 
 // simple function to render the index.html page

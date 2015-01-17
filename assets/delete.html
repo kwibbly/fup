@@ -8,11 +8,11 @@
 	<link rel="stylesheet" href="/assets/local.css">
 </head>
 <body>
-	<span><a href="/downloads">Downloads</a></span>
-	<div id="uploadForm">
-	<form action="/upload" method="POST" enctype="multipart/form-data">
-		<input type="password" name="passwd" id="passwd" />
-		<input type="file" name="file" id="file" />
+	<a href="/">Back to upload form</a><br />
+	<div id="delete">
+	<form action="/deletefile" method="POST" >
+		<label for="passwd">Password:</label><input type="password" name="passwd" id="passwd" />
+		<input type="text" name="file" value="{{ .File }}" hidden="true" />
 		<input type="submit" name="submit" value="Submit" />
 	</form>
 	</div>
