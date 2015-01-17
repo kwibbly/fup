@@ -1,18 +1,16 @@
 <!doctype html>
 <html lang="en">
-<head>
 	<meta charset="utf-8">
 	<meta name="description" content="simple file uploader for lan parties">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>{{ .Title }}</title>
 	<link rel="stylesheet" href="/assets/local.css">
-</head>
-<body>
+	<div id="content">
 	<a href="/">Back to upload form</a><br />
 	<div id="downloads">
 		{{ range .Downloads }}
 			<ul><a href="/_downloads/{{ .Filename }}">{{ .Filename }}</a>&nbsp;<a href="/delete/{{ .Filename }}">Delete</a></ul>
 		{{ end }}
 	</div>
-</body>
+	</div>
 </html>

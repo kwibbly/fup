@@ -22,6 +22,8 @@ import (
 	"time"
 )
 
+var defaultPasswd = "23geheim42"
+
 type indexPage struct {
 	Title string
 	Body  []byte
@@ -87,14 +89,12 @@ func visitFile(path string, f os.FileInfo, err error) error {
 	tx, _ := db.Begin()
 	defer tx.Commit()
 
-	dummyPasswd := "23geheim42"
-
 	cTime := time.Now()
 	sql := `
 	INSERT INTO uploads (filename, uploadDate, passwd) VALUES (?,?,?);
 	`
 	if !f.IsDir() {
-		db.Exec(sql, f.Name(), cTime, dummyPasswd)
+		db.Exec(sql, f.Name(), cTime, defaultPasswd)
 	}
 	return nil
 }
@@ -128,6 +128,9 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	defer tx.Commit()
 
 	passwd := r.FormValue("passwd")
+	if passwd == "" {
+		passwd = defaultPasswd
+	}
 	file, header, err := r.FormFile("file")
 	if err != nil {
 		log.Println("Error while uploading: ", err.Error())
@@ -180,7 +183,7 @@ func downloadHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("Something wrong with the db: ", err)
 	}
 
-	dp := &downloadPage{Title: "File Downloads", Downloads: files}
+	dp := &downloadPage{Title: "FЦР Downloads", Downloads: files}
 	t, _ := template.ParseFiles("assets/download.html")
 	t.Execute(w, dp)
 }
@@ -189,7 +192,7 @@ func deleteHandler(w http.ResponseWriter, r *http.Request) {
 	filename := r.RequestURI[len("/delete/"):]
 	filename2, _ := url.QueryUnescape(filename)
 
-	p := &deletePage{Title: "File Delete", File: filename2}
+	p := &deletePage{Title: "FЦР Delete", File: filename2}
 	t, _ := template.ParseFiles("assets/delete.html")
 	t.Execute(w, p)
 }
@@ -221,7 +224,7 @@ func deleteFileHandler(w http.ResponseWriter, r *http.Request) {
 
 // simple function to render the index.html page
 func doRest(w http.ResponseWriter, r *http.Request) {
-	p := &indexPage{Title: "File UPload"}
+	p := &indexPage{Title: "FЦР - UPload"}
 	t, _ := template.ParseFiles("assets/index.html")
 	t.Execute(w, p)
 }

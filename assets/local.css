@@ -1,7 +1,7 @@
-#downloads {
-	color: #55ff55;
+body {
+	margin: 0px;
 }
-
-#uploadForm {
-	margin: 10px;
+html,
+#content {
+	background-color: #f4d6a8;
 }
