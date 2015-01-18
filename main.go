@@ -224,7 +224,7 @@ func deleteFileHandler(w http.ResponseWriter, r *http.Request) {
 
 // simple function to render the index.html page
 func doRest(w http.ResponseWriter, r *http.Request) {
-	p := &indexPage{Title: "FЦР - UPload"}
+	p := &indexPage{Title: "FЦР - Upload"}
 	t, _ := template.ParseFiles("assets/index.html")
 	t.Execute(w, p)
 }

@@ -5,12 +5,33 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>{{ .Title }}</title>
 	<link rel="stylesheet" href="/assets/local.css">
-	<div id="content">
-	<a href="/">Back to upload form</a><br />
-	<div id="downloads">
-		{{ range .Downloads }}
-			<ul><a href="/_downloads/{{ .Filename }}">{{ .Filename }}</a>&nbsp;<a href="/delete/{{ .Filename }}">Delete</a></ul>
-		{{ end }}
+	
+	<div id="gradient-container">
+		<div id="content">
+			<h1>FЦР</h1>
+			<a href="/">Back to upload form</a><br />
+			<div id="downloads">
+				{{ range .Downloads }}
+					<ul><a href="/_downloads/{{ .Filename }}">{{ .Filename }}</a>&nbsp;<a href="/delete/{{ .Filename }}">Delete</a></ul>
+				{{ end }}
+			</div>
+		</div>
+		<div class="animate-wrapper">
+			<div class="starburst">
+			  <div class="outer">
+			    <div class="ray"></div>
+			    <div class="ray"></div>
+			    <div class="ray"></div>
+			    <div class="ray"></div>
+			    <div class="ray"></div>
+			    <div class="ray"></div>
+			    <div class="ray"></div>
+			    <div class="ray"></div>
+			    <div class="ray"></div>
+			    <div class="ray"></div>
+			  </div>
+			</div>
+		</div>
 	</div>
-	</div>
+
 </html>
