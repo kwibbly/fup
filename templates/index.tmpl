@@ -1,0 +1,13 @@
+{{template "header"}}
+			<span><a href="/downloads">Downloads</a></span>
+			<div id="uploadForm">
+				<form action="/upload" method="POST" enctype="multipart/form-data">
+					<input type="password" name="passwd" id="passwd" />
+						<div class="fileUpload communist-button">
+						    <span>Upload</span>
+						    <input type="file" class="upload communist-button" id="file" />
+						</div>
+					<input class="communist-button" type="submit" name="submit" value="Submit" />
+				</form>
+			</div>
+{{template "footer"}}

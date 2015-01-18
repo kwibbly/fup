@@ -184,7 +184,8 @@ func downloadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	dp := &downloadPage{Title: "FЦР Downloads", Downloads: files}
-	t, _ := template.ParseFiles("assets/download.html")
+	t := template.New("downloads.tmpl")
+	t = template.Must(t.ParseGlob("templates/*.tmpl"))
 	t.Execute(w, dp)
 }
 
@@ -193,7 +194,8 @@ func deleteHandler(w http.ResponseWriter, r *http.Request) {
 	filename2, _ := url.QueryUnescape(filename)
 
 	p := &deletePage{Title: "FЦР Delete", File: filename2}
-	t, _ := template.ParseFiles("assets/delete.html")
+	t := template.New("delete.tmpl")
+	t = template.Must(t.ParseGlob("templates/*.tmpl"))
 	t.Execute(w, p)
 }
 
@@ -225,6 +227,7 @@ func deleteFileHandler(w http.ResponseWriter, r *http.Request) {
 // simple function to render the index.html page
 func doRest(w http.ResponseWriter, r *http.Request) {
 	p := &indexPage{Title: "FЦР - Upload"}
-	t, _ := template.ParseFiles("assets/index.html")
+	t := template.New("index.tmpl")
+	t = template.Must(t.ParseGlob("templates/*.tmpl"))
 	t.Execute(w, p)
 }

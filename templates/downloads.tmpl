@@ -1,0 +1,7 @@
+{{template "header"}}
+			<a href="/">Back to upload form</a><br />
+			<div id="downloads">
+				{{ range .Downloads }}
+					<ul><a href="/_downloads/{{ .Filename }}">{{ .Filename }}</a>&nbsp;<a href="/delete/{{ .Filename }}">Delete</a></ul>
+				{{ end }}
+{{template "footer"}}
