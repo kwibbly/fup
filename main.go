@@ -220,7 +220,7 @@ func deleteFileHandler(w http.ResponseWriter, r *http.Request) {
 		os.Remove("./downloads/" + filename)
 	}
 
-	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+	http.Redirect(w, r, "/downloads", http.StatusTemporaryRedirect)
 
 }
 

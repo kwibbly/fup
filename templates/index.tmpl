@@ -1,13 +1,13 @@
 {{template "header"}}
-			<span><a href="/downloads">Downloads</a></span>
 			<div id="uploadForm">
 				<form action="/upload" method="POST" enctype="multipart/form-data">
-					<input type="password" name="passwd" id="passwd" />
+					<input class="communist-button" type="password" name="passwd" id="passwd" />
 						<div class="fileUpload communist-button">
 						    <span>Upload</span>
-						    <input type="file" class="upload communist-button" id="file" />
+						    <input type="file" name="file" class="upload" id="file" />
 						</div>
 					<input class="communist-button" type="submit" name="submit" value="Submit" />
 				</form>
+				<div style="text-align: center; margin-top: 5px;"><a class="communist-reference" href="/downloads">Downloads</a></div>
 			</div>
 {{template "footer"}}

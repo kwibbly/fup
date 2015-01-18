@@ -1,7 +1,8 @@
 {{template "header"}}
-			<a href="/">Back to upload form</a><br />
 			<div id="downloads">
 				{{ range .Downloads }}
-					<ul><a href="/_downloads/{{ .Filename }}">{{ .Filename }}</a>&nbsp;<a href="/delete/{{ .Filename }}">Delete</a></ul>
+					<ul><a class="communist-reference" href="/_downloads/{{ .Filename }}">{{ .Filename }}</a>&nbsp;<a class="communist-button" href="/delete/{{ .Filename }}">Delete</a></ul>
 				{{ end }}
+			</div>
+			<div style="text-align: center; margin-top: 5px;"><a class="communist-reference" href="/">Back to upload-form</a></div>
 {{template "footer"}}

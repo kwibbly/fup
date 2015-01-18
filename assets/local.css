@@ -1,10 +1,13 @@
-
 html, body {
   height: 100%;
   width: 100%;
   padding: 0;
   margin: 0px;
   overflow: hidden;
+}
+
+a {
+  text-decoration: none;
 }
 
 #gradient-container {
@@ -23,6 +26,7 @@ html, body {
 	-webkit-transform: translate(-50%,-50%);
 	-moz-transform: translate(-50%,-50%);
 }
+
 #content>h1 {
 	text-align: center;
   font-size: 150px;
@@ -31,6 +35,10 @@ html, body {
   transform: rotate(-10deg);
   -webkit-transform: rotate(-10deg);
   -moz-transform: rotate(-10deg);
+}
+
+.communist-reference {
+  color: #d73630;
 }
 
 .communist-button {
@@ -42,17 +50,20 @@ html, body {
   padding-right: 10px;
   font-size: 12pt;
   color: #f3d4a4;
-  box-shadow: inset -7px -7px -0px -6px rgba(0,0,0,0.5);
+  /*box-shadow: inset -7px -7px -0px -6px rgba(0,0,0,0.5);
   -webkit-box-shadow: inset -7px -7px -0px -6px rgba(0,0,0,0.5);
-  -moz-box-shadow: inset -7px -7px -0px -6px rgba(0,0,0,0.5);
+  -moz-box-shadow: inset -7px -7px -0px -6px rgba(0,0,0,0.5);*/
 }
 
+
 .fileUpload {
+  position: relative;
   margin-right: 3px;
   margin-left: 3px;
   margin-bottom: -8px;
   overflow: hidden;
 }
+
 .fileUpload input.upload {
   position: absolute;
   top: 0;
@@ -61,8 +72,6 @@ html, body {
   padding: 0;
   opacity: 0;
 }
-
-
 
 .starburst {
   width: 100%;
